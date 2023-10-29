@@ -13,10 +13,10 @@ export default function App() {
         <NavBar />
         <Routes>
           <Route path={"/"} element={<Home />} />
-          <Route path="/products/:slug" element={<Products />} />
+          <Route path={"/products/:slug"} element={<Products />} />
           <Route path={"/wishlist"} element={<WishList />} />
           <Route path={"/cart"} element={<Cart />} />
-          <Route path={"/productDetails"} element={<ProductDetails />} />
+          <Route path={"/productDetails/:id"} element={<ProductDetails />} />
         </Routes>
       </BrowserRouter>
     </div>

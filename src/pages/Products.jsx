@@ -16,14 +16,16 @@ export default function Products() {
   const getProducts = async () => {
     let response = await axios({
       url: `https://dummyjson.com/products/category/${slug}`,
-      method: "GET"
+      method: "GET",
     });
 
     setAllproducts(response.data.products);
+    
   };
 
   useEffect(() => {
     getProducts();
+    
   }, []);
 
   return (
@@ -33,8 +35,8 @@ export default function Products() {
         {allProducts?.length
           ? allProducts.map((product, index) => {
               return (
-                <div className="bg-white relative h-[350px] my-[10px] max-sm:w-full sm:w-[90%] sm:mx-[1rem] outline outline-[1px] outline-slate-400 rounded active:shadow-none hover:shadow-[0px_5px_10px_black] cursor-pointer">
-                  <Link to={"/productDetails"}>
+                <div key={index} className="bg-white relative h-[350px] my-[10px] max-sm:w-full sm:w-[90%] sm:mx-[1rem] outline outline-[1px] outline-slate-400 rounded active:shadow-none hover:shadow-[0px_5px_10px_black] cursor-pointer">
+                  <Link to={`/productDetails/${product.id}`}>
                     <div className="h-[50%] flex items-end">
                       <img
                         src={product?.images[0]}
@@ -78,17 +80,22 @@ export default function Products() {
                           </h2>
                         </div>
                       </div>
-                      <div className="h-[30%] flex items-center justify-end">
-                        <button className="text-[0.8rem] text-white bg-green-900 px-[0.7rem] py-[0.3rem] rounded">
+                      
+                    </div>
+                  </Link>
+                  <div className="absolute bottom-2 right-2 flex items-center justify-end">
+                        <button className="text-[0.8rem] text-white bg-green-900 px-[0.7rem] py-[0.3rem] rounded"
+                          onClick={(e)=>{
+                            e.stopPropagation();
+                          }}  
+                        >
                           Add To Cart
                         </button>
                       </div>
-                    </div>
-                  </Link>
                   <div
                     className="absolute bg-gray-100 rounded top-2 right-2 w-[22px] h-[22px] flex items-center justify-center"
                     onClick={(e) => {
-                      e.stopPropagation();
+                      
                     }}
                   >
                     <AiFillHeart
