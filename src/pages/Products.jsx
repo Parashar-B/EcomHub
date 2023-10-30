@@ -11,8 +11,10 @@ export default function Products() {
   let { slug } = useParams();
   const fullPath = location.pathname;
   const [showModal, setShowModal] = useState(false);
-
   const [allProducts, setAllproducts] = useState([]);
+  const [clickedItem, setClickedItem] = useState(null);
+  
+
   const getProducts = async () => {
     let response = await axios({
       url: `https://dummyjson.com/products/category/${slug}`,
@@ -101,6 +103,7 @@ export default function Products() {
                     <AiFillHeart
                       className="w-[20px] h-[20px] text-[gray] hover:text-red-400"
                       onClick={() => {
+                        setClickedItem(product);
                         setShowModal(true);
                       }}
                     />
@@ -145,7 +148,7 @@ export default function Products() {
               );
             })}
       </div>
-      {showModal && <AddToWishList handleShowModal={setShowModal} />}
+      {showModal && <AddToWishList handleShowModal={setShowModal} product={clickedItem}/>}
     </div>
   );
 }

@@ -1,3 +1,5 @@
+import {useContext, useEffect} from 'react';
+import { RootContext } from "../App";
 import { IoMdClose } from "react-icons/io";
 import { MdAddCircle } from "react-icons/md";
 import { BsBagHeartFill } from "react-icons/bs";
@@ -12,18 +14,59 @@ export default function AddToWishList(props) {
   const [sectionId, setSectionId] = useState(1);
   const [showOptions, setShowOptions] = useState(false);
   const [selectedList, setSelectedList] = useState("");
-  const [newWishlist, setNewWishlist] = useState("");
+  const [newWishlistName, setNewWishlistName] = useState("");
   const [placeHolder, setPlaceHolder] = useState("select a option from list");
+  const {wishList, setWishList} = useContext(RootContext);
 
   const existingList = [
-    "New List1",
-    "New List2",
-    "New List3",
-    "New List4",
-    "New List5",
-    "New List6",
-    "New List7"
+    {
+      name: "folder1",
+      items: [
+        {
+
+        },
+        {
+
+        }
+      ]
+    }
   ];
+
+
+  function generateExistingList(){
+    
+  }
+
+  function handleCreateNewWishList(){
+    wishList
+    ?
+    setWishList([
+      ...wishList,
+      {
+        name:newWishlistName,
+        products: [
+          props.product
+        ]
+      }
+    ]) 
+    :
+    setWishList([
+      {
+        name:newWishlistName,
+        products: [
+          props.product
+        ]
+      }
+    ])
+
+      props.handleShowModal(false);
+  }
+
+
+  useEffect(()=>{
+  })
+
+  console.log(wishList)
 
   return (
     <div
@@ -119,7 +162,7 @@ export default function AddToWishList(props) {
                           showOptions ? "block" : "hidden"
                         } absolute left-[5px] bg-gray-100 h-[170px] w-[210px] mt-[0.5rem] px-[0.2rem] py-[0.2rem] outline outline-[1px] outline-slate-400 overflow-y-scroll`}
                       >
-                        {existingList.map((item, index) => {
+                        {wishList?.map((item, index) => {
                           return (
                             <div
                               key={index}
@@ -151,20 +194,21 @@ export default function AddToWishList(props) {
                   <div className="w-full h-[85%] flex flex-col items-center">
                     <input
                       type="text"
-                      value={newWishlist}
+                      value={newWishlistName}
                       placeholder="Enter new wishlist name"
                       className="px-[0.5rem] py-[0.3rem] outline outline-[1px] outline-slate-400 rounded"
                       onChange={(event) => {
-                        setNewWishlist(event.target.value);
+                        setNewWishlistName(event.target.value);
                       }}
                     />
                     <button
                       className={`${
-                        newWishlist
+                        newWishlistName
                           ? "bg-green-700 cursor-pointer"
                           : "bg-gray-300 cursor-not-allowed"
                       } text-white mt-[2rem] px-[1rem] py-[0.2rem] rounded-md`}
-                      disabled
+
+                      onClick={handleCreateNewWishList}
                     >
                       Save
                     </button>
