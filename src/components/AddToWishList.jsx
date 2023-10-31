@@ -16,7 +16,7 @@ export default function AddToWishList(props) {
   const [selectedList, setSelectedList] = useState("");
   const [newWishlistName, setNewWishlistName] = useState("");
   const [placeHolder, setPlaceHolder] = useState("select a option from list");
-  const {wishList, setWishList} = useContext(RootContext);
+  const {rootWishList, createNewWishList, addToExistingList} = useContext(RootContext);
 
   const existingList = [
     {
@@ -38,35 +38,25 @@ export default function AddToWishList(props) {
   }
 
   function handleCreateNewWishList(){
-    wishList
-    ?
-    setWishList([
-      ...wishList,
-      {
-        name:newWishlistName,
-        products: [
-          props.product
-        ]
-      }
-    ]) 
-    :
-    setWishList([
-      {
-        name:newWishlistName,
-        products: [
-          props.product
-        ]
-      }
-    ])
-
+    createNewWishList({
+      name: newWishlistName,
+      products:[
+        props.product
+      ]
+    })
       props.handleShowModal(false);
+  }
+
+  function handleAddToExistingList(){
+    addToExistingList(selectedList, props.product)
+    props.handleShowModal(false);
   }
 
 
   useEffect(()=>{
   })
 
-  console.log(wishList)
+  console.log(rootWishList, createNewWishList)
 
   return (
     <div
@@ -102,7 +92,8 @@ export default function AddToWishList(props) {
                 initial={{ y: 100 }}
                 animate={{ y: 0 }}
               >
-                <button
+                {
+                  rootWishList?.length > 0 && <button
                   className="hover:bg-gray-300 flex items-center justify-center outline outline-[0.5px] outline-slate-300 rounded-md px-[0.5rem] py-[0.2rem] mb-[2rem]"
                   onClick={() => {
                     setShowFirstSection(false);
@@ -111,6 +102,7 @@ export default function AddToWishList(props) {
                   <TbListCheck className="text-[red] mr-[0.5rem]" /> Add to
                   Existing List
                 </button>
+                }
                 <button
                   className="flex hover:bg-gray-300 justify-center items-center w-fit outline outline-[0.5px] outline-slate-300 rounded-md px-[0.5rem] py-[0.2rem]"
                   onClick={() => {
@@ -145,7 +137,7 @@ export default function AddToWishList(props) {
                   <div className="w-full h-[85%] flex flex-col items-center">
                     <div className="relative">
                       <div
-                        className="bg-gray-200 outline outline-[1px] outline-slate-400 text-[0.9rem] text-gray-700 w-[220px] h-[40px] rounded-md flex justify-between items-center px-[1rem] py-[0.2rem] cursor-pointer"
+                        className={`bg-gray-200 outline outline-[1px] outline-slate-400 text-[0.9rem] ${selectedList? 'text-black font-semibold' : 'text-gray-700'} w-[220px] h-[40px] rounded-md flex justify-between items-center px-[1rem] py-[0.2rem] cursor-pointer`}
                         onClick={() => {
                           setShowOptions(!showOptions);
                         }}
@@ -162,18 +154,18 @@ export default function AddToWishList(props) {
                           showOptions ? "block" : "hidden"
                         } absolute left-[5px] bg-gray-100 h-[170px] w-[210px] mt-[0.5rem] px-[0.2rem] py-[0.2rem] outline outline-[1px] outline-slate-400 overflow-y-scroll`}
                       >
-                        {wishList?.map((item, index) => {
+                        {rootWishList?.map((listObj, index) => {
                           return (
                             <div
                               key={index}
-                              className="bg-gray-200 hover:bg-gray-300 flex items-center text-[0.8rem] h-[1.8rem] px-[0.6rem] py-[0.1rem] rounded my-[0.2rem] cursor-pointer overflow-hidden scroll-smooth"
+                              className="bg-gray-200 hover:bg-gray-300 flex items-center  text-[0.8rem] h-[1.8rem] px-[0.6rem] py-[0.1rem] rounded my-[0.2rem] cursor-pointer overflow-hidden scroll-smooth"
                               onClick={() => {
-                                setSelectedList(item);
-                                setPlaceHolder(item);
+                                setSelectedList(listObj.name);
+                                setPlaceHolder(listObj.name);
                                 setShowOptions(false);
                               }}
                             >
-                              {item}
+                              {listObj.name}
                             </div>
                           );
                         })}
@@ -185,7 +177,9 @@ export default function AddToWishList(props) {
                           ? "bg-green-700 cursor-pointer"
                           : "bg-gray-300 cursor-not-allowed"
                       } text-white mt-[2rem] px-[1rem] py-[0.2rem] rounded-md`}
-                      disabled
+                      onClick={()=>{
+                        handleAddToExistingList();
+                      }}
                     >
                       Save
                     </button>
