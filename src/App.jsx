@@ -11,12 +11,38 @@ export const RootContext = createContext();
 
 export default function App() {
 
-  const [wishlist, setWishList] = useState([]);
+  const [rootWishList, setRootWishList] = useState([]);
+
+  function createNewWishList(newWishListObj){
+    rootWishList.length > 0 ? 
+    setRootWishList([
+      ...rootWishList,
+      newWishListObj
+    ])
+    :
+    setRootWishList([
+      newWishListObj
+    ])
+  }
+
+  function addToExistingList(selectedList, newProduct){
+      const updatedList = rootWishList.map((list,index)=>{
+        if(list.name === selectedList){
+          list.products.push(newProduct)
+        }
+        return list
+      })
+
+      setRootWishList(updatedList);
+  }
+
+  console.log("Root ",rootWishList)
 
   return (
     <div className="relative">
-      <RootContext.Provider value={{wishlist, setWishList}}>
+      
         <BrowserRouter>
+        <RootContext.Provider value={{rootWishList, createNewWishList, addToExistingList}}>
           <NavBar />
           <Routes>
             <Route path={"/"} element={<Home />} />
@@ -25,8 +51,8 @@ export default function App() {
             <Route path={"/cart"} element={<Cart />} />
             <Route path={"/productDetails/:id"} element={<ProductDetails />} />
           </Routes>
+        </RootContext.Provider>
         </BrowserRouter>
-      </RootContext.Provider>
     </div>
   );
 }
